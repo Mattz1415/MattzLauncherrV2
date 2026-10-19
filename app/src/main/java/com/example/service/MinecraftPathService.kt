@@ -97,6 +97,44 @@ object MinecraftPathService {
         }
     }
 
+    fun unpackComponentsFromAssets(context: Context, gameDir: File) {
+        val assetManager = context.assets
+        val targetComponentsDir = File(gameDir, "components")
+        if (!targetComponentsDir.exists()) targetComponentsDir.mkdirs()
+
+        try {
+            // Unpack root asset files (default.json, mod_data.txt, options.txt, etc.)
+            listOf("default.json", "mod_data.txt", "modpack_data.txt", "resolv.conf", "steve.png").forEach { name ->
+                val dest = File(gameDir, name)
+                if (!dest.exists()) {
+                    try {
+                        assetManager.open(name).use { input ->
+                            dest.outputStream().use { output -> input.copyTo(output) }
+                        }
+                    } catch (_: Exception) {}
+                }
+            }
+
+            // Unpack components directory if needed
+            val componentFolders = assetManager.list("components") ?: emptyArray()
+            for (folder in componentFolders) {
+                val folderDest = File(targetComponentsDir, folder)
+                if (!folderDest.exists()) folderDest.mkdirs()
+                val subFiles = assetManager.list("components/$folder") ?: emptyArray()
+                for (sub in subFiles) {
+                    val destFile = File(folderDest, sub)
+                    if (!destFile.exists()) {
+                        try {
+                            assetManager.open("components/$folder/$sub").use { input ->
+                                destFile.outputStream().use { output -> input.copyTo(output) }
+                            }
+                        } catch (_: Exception) {}
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+    }
+
     fun listAvailableDirectories(context: Context): List<GameDirectoryPath> {
         val active = getActiveGameDir(context)
         val defaultExternal = File(Environment.getExternalStorageDirectory(), "games/com.mattz.launcher/.minecraft")

@@ -304,6 +304,7 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             activeGameDir = MinecraftPathService.getActiveGameDir(app)
             MinecraftPathService.ensureSubdirectories(activeGameDir)
+            MinecraftPathService.unpackComponentsFromAssets(app, activeGameDir)
 
             // Accounts
             val diskAccounts = AccountManagerService.loadAccounts(app)
