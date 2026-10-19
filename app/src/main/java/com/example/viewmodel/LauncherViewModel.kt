@@ -1078,7 +1078,7 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
             if (asset != null) {
                 val destDir = File(activeGameDir, "libraries")
                 if (!destDir.exists()) destDir.mkdirs()
-                val targetFile = File(destDir, "${asset.fileName}.jar")
+                val targetFile = File(destDir, "${asset.assetName}.jar")
                 if (!targetFile.exists()) {
                     targetFile.writeText("// MattzLauncher Zalith Release Asset")
                 }
@@ -1092,7 +1092,7 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
                         state.copy(
                             zalithReleaseAssets = updated,
                             minecraftFileNodes = updatedFiles,
-                            statusBannerMessage = "Paket '${asset.title}' berhasil dipasang ke libraries/"
+                            statusBannerMessage = "Paket '${asset.assetName}' berhasil dipasang ke libraries/"
                         )
                     }
                     appendLog("[AssetInstaller/INFO]: Installed release package id=$assetId into libraries/")
