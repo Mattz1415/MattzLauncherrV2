@@ -1,0 +1,6 @@
+{
+  "name": "MattzLauncher",
+  "description": "Next-generation Minecraft: Java Edition Launcher and Performance Command Center with Nexus Discovery Dark OLED Glassmorphism aesthetic.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

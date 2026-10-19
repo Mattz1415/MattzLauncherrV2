@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MattzLauncher</string>
+    <string name="ready_to_play">SIAP DIMAINKAN</string>
+    <string name="play_now">Mainkan Sekarang</string>
+    <string name="configure_instance">+ Konfigurasi Instans</string>
+    <string name="auto_optimize_boost">Auto-Optimize &amp; Boost</string>
+    <string name="open_50_tools">Buka 50+ Fitur &amp; Tweaks</string>
+    <string name="install_local_storage">Install dari Penyimpanan Lokal</string>
+</resources>

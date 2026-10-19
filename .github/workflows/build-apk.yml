@@ -1,0 +1,84 @@
+name: Build MattzLauncher Android APK
+
+on:
+  push:
+    branches: [ "main", "master", "**" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Assemble Debug & Release APK (arm64-v8a / Universal)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Eclipse Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.3.1'
+
+      - name: Prepare Keystores & Environment (.env)
+        run: |
+          if [ ! -f .env ]; then
+            cp .env.example .env || touch .env
+          fi
+          if [ ! -f debug.keystore ]; then
+            keytool -genkeypair -v \
+              -keystore debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          if [ ! -f my-upload-key.jks ]; then
+            keytool -genkeypair -v \
+              -keystore my-upload-key.jks \
+              -storepass mattzlauncher \
+              -alias upload \
+              -keypass mattzlauncher \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=MattzLauncher,OU=MobileGaming,O=Mattz1415,L=Jakarta,S=ID,C=ID"
+          fi
+
+      - name: Build Debug & Release APKs with Gradle
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
+          STORE_PASSWORD: mattzlauncher
+          KEY_PASSWORD: mattzlauncher
+        run: |
+          gradle :app:assembleDebug :app:assembleRelease --no-daemon --stacktrace
+
+      - name: Upload MattzLauncher Debug APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MattzLauncher-v1.0.0-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Upload MattzLauncher Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MattzLauncher-v1.0.0-release-apk
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: warn
