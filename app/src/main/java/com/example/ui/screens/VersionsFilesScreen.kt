@@ -953,7 +953,7 @@ private fun PathsAccountsAndGithubCiSection(
                             .padding(10.dp)
                     ) {
                         Text(
-                            text = "name: Build MattzLauncher Android APK\non: [push, pull_request, workflow_dispatch]\njobs:\n  build-apk:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4 (temurin 21)\n      - uses: gradle/actions/setup-gradle@v4 (9.3.1)\n      - run: gradle :app:assembleDebug :app:assembleRelease\n      - uses: actions/upload-artifact@v4",
+                            text = "name: Build MattzLauncher Android APK\non: [push, pull_request, workflow_dispatch]\njobs:\n  build-apk:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4 (temurin 21)\n      - name: Configure Android SDK & Accept All Licenses\n      - uses: gradle/actions/setup-gradle@v4 (9.3.1)\n      - run: gradle :app:assembleDebug :app:assembleRelease\n      - uses: actions/upload-artifact@v4",
                             style = MaterialTheme.typography.labelSmall.copy(
                                 color = PlatinumSilver,
                                 fontSize = 9.sp,
